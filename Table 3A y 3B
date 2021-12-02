@@ -1,0 +1,88 @@
+*Cargo la base 
+clear all
+use unbundle-2,clear
+
+
+*Genero las variables de excolonias
+gen E_legal_origin = sjlouk  if ex2col==1
+gen Log_settler = logem4  if ex2col==1
+gen Log_density = lpd1500s  if ex2col==1
+gen Legal_formalism = sdformalism  if ex2col==1
+gen Procedural_com = ecproccompindex if ex2col==1
+gen Number_proc = ecnumprocedures if ex2col==1
+gen Constraint_executive = conssj7000  if ex2col==1
+gen Protection_exprop = avexpr if ex2col==1
+gen Private_property = efhrpr7 if ex2col==1
+
+
+******* Tabla 3 *********
+
+*Hago las regresiones correspondientes para la Tabla 3
+ *Panel A
+ reg Legal_formalism E_legal_origin Log_settler if loggdppc1995~=.&conssj7000~=.
+ estimates store LF1
+ reg Legal_formalism E_legal_origin Log_density if loggdppc1995~=.&conssj7000~=.
+ estimates store LF2
+ reg Procedural_com E_legal_origin Log_settler if loggdppc1995~=.&conssj7000~=.
+ estimates store LF3
+ reg Procedural_com E_legal_origin Log_density if loggdppc1995~=.&conssj7000~=.
+ estimates store LF4
+ reg Number_proc E_legal_origin Log_settler if loggdppc1995~=.&conssj7000~=.
+ estimates store LF5
+ reg Number_proc E_legal_origin Log_density if loggdppc1995~=.&conssj7000~=.
+ estimates store LF6
+ 
+ esttab LF1 LF2 LF3 LF4 LF5 LF6, nogap compress nodep se
+
+*Sensibilidad (sin el if .)
+*Hago las regresiones correspondientes para la Tabla 3
+ *Panel A
+ reg Legal_formalism E_legal_origin Log_settler
+ estimates store LF1
+ reg Legal_formalism E_legal_origin Log_density
+ estimates store LF2
+ reg Procedural_com E_legal_origin Log_settler
+ estimates store LF3
+ reg Procedural_com E_legal_origin Log_density
+ estimates store LF4
+ reg Number_proc E_legal_origin Log_settler
+ estimates store LF5
+ reg Number_proc E_legal_origin Log_density
+ estimates store LF6
+ 
+ esttab LF1 LF2 LF3 LF4 LF5 LF6, nogap compress nodep se
+ 
+*Hago las regresiones correspondientes para la Tabla 3
+ *Panel B
+ reg Constraint_executive E_legal_origin Log_settler if loggdppc1995~=.&sdformalism~=.
+ estimates store LF1
+ reg Constraint_executive E_legal_origin Log_density if loggdppc1995~=.&sdformalism~=.
+ estimates store LF2
+ reg Protection_exprop E_legal_origin Log_settler if loggdppc1995~=.&sdformalism~=.
+ estimates store LF3
+ reg Protection_exprop E_legal_origin Log_density if loggdppc1995~=.&sdformalism~=.
+ estimates store LF4
+ reg Private_property E_legal_origin Log_settler if loggdppc1995~=.&sdformalism~=.
+ estimates store LF5
+ reg Private_property E_legal_origin Log_density if loggdppc1995~=.&sdformalism~=.
+ estimates store LF6
+ 
+ esttab LF1 LF2 LF3 LF4 LF5 LF6, nogap compress nodep se
+
+*Sensibilidad (sin el if .)
+*Hago las regresiones correspondientes para la Tabla 3
+ *Panel B
+ reg Constraint_executive E_legal_origin Log_settler
+ estimates store LF1
+ reg Constraint_executive E_legal_origin Log_density
+ estimates store LF2
+ reg Protection_exprop E_legal_origin Log_settler
+ estimates store LF3
+ reg Protection_exprop E_legal_origin Log_density
+ estimates store LF4
+ reg Private_property E_legal_origin Log_settler
+ estimates store LF5
+ reg Private_property E_legal_origin Log_density
+ estimates store LF6
+ 
+ esttab LF1 LF2 LF3 LF4 LF5 LF6, nogap compress nodep se
