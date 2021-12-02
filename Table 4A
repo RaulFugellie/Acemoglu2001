@@ -1,0 +1,61 @@
+*Cargo la base 
+clear all
+use unbundle-2,clear
+
+*Genero las variables de excolonias
+gen E_legal_origin = sjlouk  if ex2col==1
+gen Log_settler = logem4  if ex2col==1
+gen Log_density = lpd1500s  if ex2col==1
+gen Legal_formalism = sdformalism  if ex2col==1
+gen Procedural_com = ecproccompindex if ex2col==1
+gen Number_proc = ecnumprocedures if ex2col==1
+gen Constraint_executive = conssj7000  if ex2col==1
+gen Protection_exprop = avexpr if ex2col==1
+gen Private_property = efhrpr7 if ex2col==1
+
+
+
+******* Tabla 4 *********
+
+*Hago las regresiones correspondientes para la Tabla 4
+*Panel A IV
+
+ivreg loggdppc1995 (Legal_formalism xcon1990sj = E_legal_origin Log_settler)
+estimates store LE1
+ivreg loggdppc1995 (Legal_formalism xcon1990sj = E_legal_origin Log_density)
+estimates store LE2
+ivreg loggdppc1995 (Procedural_com xcon1990sj = E_legal_origin Log_settler)
+estimates store LE3
+ivreg loggdppc1995 (Number_proc xcon1990sj = E_legal_origin Log_settler)
+estimates store LE4
+ivreg loggdppc1995 (Legal_formalism Protection_exprop = E_legal_origin Log_settler)
+estimates store LE5
+ivreg loggdppc1995 (Legal_formalism Private_property = E_legal_origin Log_settler)
+estimates store LE6
+
+esttab LE1 LE2 LE3 LE4 LE5 LE6, nogap compress nodep se
+
+*Panel A OLS
+
+reg loggdppc1995 Legal_formalism xcon1990sj if (E_legal_origin!=. & Log_settler!=.)
+estimates store LT1
+reg loggdppc1995 Legal_formalism xcon1990sj if (E_legal_origin!=. & Log_density!=.)
+estimates store LT2
+reg loggdppc1995 Procedural_com xcon1990sj if (E_legal_origin!=. & Log_settler!=.)
+estimates store LT3
+reg loggdppc1995 Number_proc xcon1990sj if (E_legal_origin!=. & Log_settler!=.)
+estimates store LT4
+reg loggdppc1995 Legal_formalism Protection_exprop if (E_legal_origin!=. & Log_settler!=.)
+estimates store LT5
+reg loggdppc1995 Legal_formalism Private_property if (E_legal_origin!=. & Log_settler!=.)
+estimates store LT6
+ 
+esttab LT1 LT2 LT3 LT4 LT5 LT6, nogap compress nodep se
+
+*Test de hausman
+hausman LE1 LT1, sigmamore
+hausman LE2 LT2, sigmamore
+hausman LE3 LT3, sigmamore
+hausman LE4 LT4, sigmamore
+hausman LE5 LT5, sigmamore
+hausman LE6 LT6, sigmamore
